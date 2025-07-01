@@ -24,10 +24,14 @@ export default function PerformanceChart({ assessments }) {
 
   useEffect(() => {
     if (assessments) {
-      const formattedData = assessments.map((assessment) => ({
-        date: format(new Date(assessment.createdAt), "MMM dd"),
-        score: assessment.quizScore,
-      }));
+      const formattedData = assessments
+        .map((assessment) => ({
+          dateObj: new Date(assessment.createdAt), // for sorting
+          date: format(new Date(assessment.createdAt), "MMM dd, h:mm a"),
+          score: assessment.quizScore,
+        }))
+        .sort((a, b) => a.dateObj - b.dateObj); // sort chronologically by real date
+
       setChartData(formattedData);
     }
   }, [assessments]);
@@ -69,6 +73,8 @@ export default function PerformanceChart({ assessments }) {
                 dataKey="score"
                 stroke="hsl(var(--primary))"
                 strokeWidth={2}
+                dot={true}
+                connectNulls={true}
               />
             </LineChart>
           </ResponsiveContainer>
